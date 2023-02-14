@@ -10,20 +10,21 @@ import {
   boolean,
   supportedOperator,
 } from './data.js';
+import { Filters } from './Filters.jsx';
 
 export default function App() {
   const [leadType, setLeadType] = useState('');
-
   const [leads, setLead] = useState({ lead: [], contact: [] });
   const [dataTypes, setDataTypes] = useState([]);
-
   const [filter, setFilter] = useState([]);
-
   const [f, setF] = useState({ lead: [], contact: [] });
-
-  console.log(f);
-
   const [eachFilter, setEachFilter] = useState({ lead: [], contact: [] });
+  const [createdFilter, setCreatedFilter] = useState({ lead: [], contact: [] });
+
+  const [localFilter, setLocalStateFilter] = useState({
+    lead: [],
+    contact: [],
+  });
 
   useEffect(() => {
     setLeadType('lead');
@@ -61,7 +62,18 @@ export default function App() {
     }
   };
 
-  console.log(leads[leadType]);
+  let id = 0;
+
+  const onAddFilter = (formData) => {
+    setCreatedFilter((prev) => ({
+      ...prev,
+      [leadType]: [...prev[leadType], { ...formData, id: uuidv4() }],
+    }));
+  };
+
+  console.log(createdFilter);
+
+  const onDeleteFilter = () => {};
 
   return (
     <div className="g-parent">
@@ -157,24 +169,34 @@ export default function App() {
         })}
       </div>
 
-      <div className="filters">
-        <div className="each_filter">
-          <div>
-            <h4>Filter name</h4>
-            <input placeholder="filter name" />
-          </div>
-          <div>
-            <h4>operator name</h4>
-            <input placeholder="operator name" />
-          </div>
-          <div>
-            <h4>value</h4>
-            <input placeholder="enter value" />
-          </div>
-        </div>
+      {eachFilter[leadType]?.map((eachf) => (
+        <Filters
+          eachFilter={eachFilter}
+          setEachFilter={setEachFilter}
+          leadType={leadType}
+          leads={leads}
+          eachf={eachf}
+          getOperator={getOperator}
+          onAddFilter={onAddFilter}
+          onDeleteFilter={onDeleteFilter}
+          localFilter={localFilter}
+          setLocalStateFilter={setLocalStateFilter}
+        />
+      ))}
 
-        <button>Add Filter</button>
-      </div>
+      <button
+        onClick={() => {
+          setEachFilter((prev) => ({
+            ...prev,
+            [leadType]: [
+              ...prev[leadType],
+              { id: uuidv4(), value: '', zoho_field: '', operator: '' },
+            ],
+          }));
+        }}
+      >
+        Add Filter
+      </button>
     </div>
   );
 }

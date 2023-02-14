@@ -35,7 +35,7 @@ p {
 
 .each_filter {
   background-color: rgba(128, 128, 128, 0.164);
-  max-width: fit-content;
+  max-width: 400px;
   padding: 10px;
   margin: 8px 0;
 }
