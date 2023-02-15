@@ -37,6 +37,8 @@ export default function App() {
     setDataTypes([...new Set([...leadDataType, ...contactDataType])]);
   }, [leads]);
 
+  console.log(typeof {});
+
   const getOperator = (dataTypes) => {
     if (supportedOperator.includes(dataTypes)) {
       switch (dataTypes) {
@@ -64,11 +66,15 @@ export default function App() {
 
   let id = 0;
 
-  const onAddFilter = (formData) => {
+  const onAddFilter = (formData, id) => {
     setCreatedFilter((prev) => ({
       ...prev,
       [leadType]: [...prev[leadType], { ...formData, id: uuidv4() }],
     }));
+
+    const hh = eachFilter[leadType].filter((f) => f.filterId !== id);
+
+    setEachFilter((prev) => ({ ...prev, [leadType]: [...hh] }));
   };
 
   console.log(createdFilter);
@@ -169,6 +175,27 @@ export default function App() {
         })}
       </div>
 
+      {createdFilter[leadType]?.map((f) => {
+        console.log(f.value);
+        return (
+          <div className="created_filter">
+            <div className="header">
+              {' '}
+              <p>
+                {leads[leadType]?.find((ff) => ff.name === f.zoho_field)?.label}
+              </p>
+              <button>X</button>
+            </div>
+            <div>
+              {f.operator} ||{' '}
+              {typeof f.value === 'object' &&
+                `${f.value.endDateTime}-${f.value.startDateTime}`}
+              {typeof f.value === 'string' && f.value}
+            </div>
+          </div>
+        );
+      })}
+
       {eachFilter[leadType]?.map((eachf) => (
         <Filters
           eachFilter={eachFilter}
@@ -188,10 +215,7 @@ export default function App() {
         onClick={() => {
           setEachFilter((prev) => ({
             ...prev,
-            [leadType]: [
-              ...prev[leadType],
-              { id: uuidv4(), value: '', zoho_field: '', operator: '' },
-            ],
+            [leadType]: [...prev[leadType], { filterId: uuidv4() }],
           }));
         }}
       >

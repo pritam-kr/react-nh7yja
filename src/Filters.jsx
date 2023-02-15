@@ -179,7 +179,7 @@ export const Filters = ({
         <div>
           <button
             onClick={() => {
-              onAddFilter(formData);
+              onAddFilter(formData, eachf.filterId);
             }}
             disabled={
               !formData.zoho_field && !formData.id && !formData.data_type
