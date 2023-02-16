@@ -25,7 +25,7 @@ export default function App() {
     lead: [],
     contact: [],
   });
-
+  console.log(dataTypes);
   useEffect(() => {
     setLeadType('lead');
     setLead({ lead: lead, contact: contact });
